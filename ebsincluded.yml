@@ -1,0 +1,46 @@
+Parameters:
+  InstanceType:
+    Description: WebServer EC2 instance type (has default, AllowedValues)
+    Type: String
+    Default: t2.small
+    AllowedValues:
+      - t1.micro
+      - t2.nano
+      - t2.micro
+      - t2.small
+  AMI:
+    Description: Choose any ami you want
+    Type: String
+    Default: ami-0dc2d3e4c0f9ebd18
+    AllowedValues:
+      - ami-0dc2d3e4c0f9ebd18
+      - ami-09e67e426f25ce0d7
+      - ami-0747bdcabd34c712a
+Resources:
+  MyEBSVolume:
+    Type: AWS::EC2::Volume
+    Properties:  
+      AvailabilityZone: us-east-1a
+      Encrypted: True
+      Size: 100
+      VolumeType: gp3
+  MyEC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      #we reference the InstanceType parameter
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref AMI
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH and HTTP
+      GroupName: SG
+      SecurityGroupIngress: 
+      - CidrIp: 0.0.0.0/0
+        FromPort: 22
+        IpProtocol: tcp
+        ToPort: 80
+      - CidrIp: 0.0.0.0/0
+        FromPort: 80
+        IpProtocol: tcp
+        ToPort: 80
